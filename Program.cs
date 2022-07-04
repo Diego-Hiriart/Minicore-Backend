@@ -2,18 +2,25 @@ using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var AllowFrontendHostOrigins = "AllowFrontendHostOrigins";
+var devCORS = "AllowLocahostHostOrigins";
+
+var prodCORS = "AllowFrontendHostOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: AllowFrontendHostOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000")//Only the front end address can use it //https://minicore-front-hiriart.herokuapp.com/
-                          .WithHeaders(HeaderNames.ContentType)//Allow content type (to use jsons)
-                          .WithMethods("POST", "GET", "PUT", "DELETE");//Allow all methods
+    options.AddPolicy(name: devCORS,policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts:Dev"))//Only the local front end address can use it http://localhost:3000
+        .WithHeaders(HeaderNames.ContentType)//Allow content type (to use jsons)
+        .WithMethods("POST", "GET", "PUT", "DELETE");//Allow all methods
 
-                      });
+    });
+    options.AddPolicy(name: prodCORS, policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts:Prod"))//Only the deployment frontend address can use it https://minicore-front-hiriart.herokuapp.com
+        .WithHeaders(HeaderNames.ContentType)//Allow content type (to use jsons)
+        .WithMethods("POST", "GET", "PUT", "DELETE");//Allow all methods
+    });
 });
 
 // Add services to the container.
@@ -34,7 +41,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(AllowFrontendHostOrigins);//Use the CORS policy, after UseRouting, before UseAuthentication
+if (app.Environment.IsProduction())//Use the appropriate CORS policy, after UseRouting, before UseAuthentication
+{
+    app.UseCors(prodCORS);
+}
+else if (app.Environment.IsDevelopment())
+{
+    app.UseCors(devCORS);
+}
 
 app.UseAuthorization();
 
