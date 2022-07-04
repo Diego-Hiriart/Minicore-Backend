@@ -8,8 +8,9 @@
             this.Environment = Environment;
             if (Environment.IsProduction())
             {
-                this.dbConn = Configuration.GetConnectionString("Deployment");
-            }else if (Environment.IsDevelopment())
+                this.dbConn = Configuration.GetConnectionString("Prod");
+            }
+            else if (Environment.IsDevelopment())
             {
                 this.dbConn = Configuration.GetConnectionString("Dev");
             }
