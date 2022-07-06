@@ -11,15 +11,17 @@ namespace Minicore_Backend.Controllers
     [Route("api/calc")]
     public class CoreController : ControllerBase
     {
+        //A constructor for this class is needed so that when it is called the config and evnironment info needed are passed
         public CoreController(IConfiguration config, IWebHostEnvironment env)
         {
             this.config = config;
             this.env = env;
             this.db = new DBConfig(this.config, this.env).dbConn;
         }
+        //These configurations and environment info are needed to create a DBConfig instance that has the right connection string depending on whether the app is running on a development or production environment
         private readonly IConfiguration config;
         private readonly IWebHostEnvironment env;
-        private string db;
+        private string db;//Connection string
 
         [HttpPost]
         public async Task<ActionResult<List<CalcResponse>>> CalculatePassesData(CalcRequest calcRequest)
@@ -96,7 +98,7 @@ namespace Minicore_Backend.Controllers
                                 }
                             }
 
-                            //THe used days are the days in which the passes can be used, which are all but Sunday
+                            //The used days are the days in which the passes can be used, which are all but Sunday
                             int usedDays = GetBusinessDays(unfilteredPass.Purchase, today, new int[] { 1, 2, 3, 4, 5, 6 });//0 is sunday
                             int remainingPasses = passType.PassesAmount - usedDays;
                             DateTime estimatedEndDate = unfilteredPass.Purchase.AddMonths(passType.MonthsDuration);

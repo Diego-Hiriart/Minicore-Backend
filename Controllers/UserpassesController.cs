@@ -12,15 +12,17 @@ namespace Minicore_Backend.Controllers
     [Route("api/user-passes")]
     public class UserPassesController : ControllerBase
     {
+        //A constructor for this class is needed so that when it is called the config and evnironment info needed are passed
         public UserPassesController(IConfiguration config, IWebHostEnvironment env)
         {
             this.config = config;
             this.env = env;
             this.db = new DBConfig(this.config, this.env).dbConn;
         }
+        //These configurations and environment info are needed to create a DBConfig instance that has the right connection string depending on whether the app is running on a development or production environment
         private readonly IConfiguration config;
         private readonly IWebHostEnvironment env;
-        private string db;
+        private string db;//Connection string
 
         [HttpGet]
         public async Task<ActionResult<List<UserPass>>> GetUserPasses()
