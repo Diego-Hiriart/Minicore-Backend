@@ -41,11 +41,11 @@ namespace Minicore_Backend.Controllers
                                 while (reader.Read())
                                 {
                                     var user = new User();
-                                    user.userid = reader.GetInt32(0);//Get int from the first column
+                                    user.UserId = reader.GetInt32(0);//Get int from the first column
                                     //Use castings so that nulls get created if needed
-                                    user.username = reader[1] as string;
-                                    user.email = reader[2] as string;
-                                    users.Add(user);//Add brand to list
+                                    user.Username = reader[1] as string;
+                                    user.Email = reader[2] as string;
+                                    users.Add(user);//Add user to list
                                 }
                             }
                         }

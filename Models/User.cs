@@ -4,16 +4,15 @@
     {
         public User() { }
 
-        public User(int userid, string username, string email)
+        public User(int userId, string username, string email)
         {
-            this.userid = userid;
-            this.username = username;
-            this.email = email;
+            this.UserId = userId;
+            this.Username = username;
+            this.Email = email;
         }
         
-        public int userid { set; get; }
-        public string username { set; get; }
-
-        public string email { set; get; }
+        public int UserId { set; get; }
+        public string Username { set; get; }
+        public string Email { set; get; }
     }
 }
