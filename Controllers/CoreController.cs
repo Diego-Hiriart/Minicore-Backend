@@ -62,12 +62,12 @@ namespace Minicore_Backend.Controllers
                         }
 
                         //Calculations
-                        foreach (UserPass unfilteredPass in userPasses)
+                        foreach (UserPass userPass in userPasses)
                         {
                             using (NpgsqlCommand cmd = conn.CreateCommand())
                             {
                                 cmd.CommandText = readUsers;
-                                cmd.Parameters.AddWithValue("@0", unfilteredPass.UserId);
+                                cmd.Parameters.AddWithValue("@0", userPass.UserId);
                                 using (NpgsqlDataReader reader = cmd.ExecuteReader())
                                 {
                                     while (reader.Read())
@@ -83,7 +83,7 @@ namespace Minicore_Backend.Controllers
                             using (NpgsqlCommand cmd = conn.CreateCommand())
                             {
                                 cmd.CommandText = readPassTypes;
-                                cmd.Parameters.AddWithValue("@0", unfilteredPass.PasstypeId);
+                                cmd.Parameters.AddWithValue("@0", userPass.PasstypeId);
                                 using (NpgsqlDataReader reader = cmd.ExecuteReader())
                                 {
                                     while (reader.Read())
@@ -99,15 +99,14 @@ namespace Minicore_Backend.Controllers
                             }
 
                             //The used days are the days in which the passes can be used, which are all but Sunday
-                            int usedDays = GetBusinessDays(unfilteredPass.Purchase, today, new int[] { 1, 2, 3, 4, 5, 6 });//0 is sunday
+                            int usedDays = GetBusinessDays(userPass.Purchase, today, new int[] { 1, 2, 3, 4, 5, 6 });//0 is sunday
                             int remainingPasses = passType.PassesAmount - usedDays;
-                            DateTime estimatedEndDate = unfilteredPass.Purchase.AddMonths(passType.MonthsDuration);
+                            DateTime estimatedEndDate = userPass.Purchase.AddMonths(passType.MonthsDuration);
 
                             //Add the result only if conditions are met
                             if (remainingPasses > 0 && estimatedEndDate >= requestStartDate)
                             {
-                                calcResponses.Add(new CalcResponse(user.UserId, user.Username, user.Email, passType.PasstypeId, passType.Name,
-                                unfilteredPass.UserPassId, unfilteredPass.Purchase, estimatedEndDate, remainingPasses));
+                                calcResponses.Add(new CalcResponse(user, passType, userPass, estimatedEndDate, remainingPasses));
                             }
                             
                             //Reset user and passtype
