@@ -2,24 +2,16 @@ using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var devCORS = "AllowLocahostHostOrigins";
-
-var prodCORS = "AllowFrontendHostOrigins";
+var frontCORS = "AllowLocahostHostOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: devCORS,policy =>
+    options.AddPolicy(name: frontCORS, policy =>
     {
-        policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts:Dev"))//Only the local front end address can use it http://localhost:3000
+        policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts").Split(";"))//Only the front end address can use it
         .WithHeaders(HeaderNames.ContentType)//Allow content type (to use jsons)
         .WithMethods("POST", "GET", "PUT", "DELETE");//Allow all methods
 
-    });
-    options.AddPolicy(name: prodCORS, policy =>
-    {
-        policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedHosts:Prod"))//Only the deployment frontend address can use it https://minicore-front-hiriart.herokuapp.com
-        .WithHeaders(HeaderNames.ContentType)//Allow content type (to use jsons)
-        .WithMethods("POST", "GET", "PUT", "DELETE");//Allow all methods
     });
 });
 
@@ -41,14 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-if (app.Environment.IsProduction())//Use the appropriate CORS policy, after UseRouting, before UseAuthentication
-{
-    app.UseCors(prodCORS);
-}
-else if (app.Environment.IsDevelopment())
-{
-    app.UseCors(devCORS);
-}
+app.UseCors(frontCORS);
 
 app.UseAuthorization();
 

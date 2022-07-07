@@ -61,7 +61,7 @@ namespace Minicore_Backend.Controllers
             catch (Exception eSql)
             {
                 Debug.WriteLine("Exception: " + eSql.Message);
-                return StatusCode(500);
+                return StatusCode(500,new object[] { eSql.Message });
             }
         }
     }
