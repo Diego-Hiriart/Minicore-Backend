@@ -30,5 +30,9 @@ The project consists of a site where parking passes can be checked, this include
   - Calculate an estimated date on which the passes will ran out.
   - Using the selected date, filter out passes that would run out before that date.
 
+# Useful resources / Documentation
+  - [Enable Cross-Origin Requests (CORS) in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-6.0)
+  - [CRUD with a .NET 6 Web API & Entity Framework Core 🚀 Full Course](https://youtu.be/Fbf_ua2t6v4)
+
 # Contact
 [hiriart.leon.d@gmail.com](mailto:hiriart.leon.d@gmail.com)
